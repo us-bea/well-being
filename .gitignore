@@ -1,0 +1,9 @@
+*.env
+./*.html
+.ipynb_checkpoints/
+__pycache__
+output.xlsx
+.mypy_cache/
+.vscode/
+index.Template_final*.htm
+docsrc/_build/
