@@ -13,8 +13,6 @@ from fredapi import Fred
 
 import beaapi
 
-# ^^^ Once we upgrade to Python >= 3.9, can use importlib.resources
-
 cache_dir: str = "cache"
 
 
@@ -154,6 +152,7 @@ def regional_data(
             LineCode=line,
             Year="ALL",
         )
+        data.attrs.pop("params")
         if save_to_cache:
             with open(cache_dir + "/" + cache_fname, "wb") as handle:
                 pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -181,6 +180,7 @@ def industry_data(
             Industry="ALL",
             Year="ALL",
         )
+        data.attrs.pop("params")
         if save_to_cache:
             with open(cache_dir + "/" + cache_fname, "wb") as handle:
                 pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -229,6 +229,7 @@ def mne_series(
             SeriesID=series_id,
             Year=year,
         )
+        data.attrs.pop("params")
         if save_to_cache:
             with open(cache_dir + "/" + cache_fname, "wb") as handle:
                 pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -254,6 +255,7 @@ def ita_series(
             frequency=frequency,
             Year="ALL",
         )
+        data.attrs.pop("params")
         if save_to_cache:
             with open(cache_dir + "/" + cache_fname, "wb") as handle:
                 pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)

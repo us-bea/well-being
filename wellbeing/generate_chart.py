@@ -4,6 +4,7 @@ from typing import List, Any, Union, Dict, Tuple
 import yaml
 import math
 import datetime
+import re
 from importlib.resources import files
 
 import pandas as pd
@@ -51,8 +52,11 @@ def _load_chart_config():
 _load_chart_config()
 
 
+theme_path = files(__package__).joinpath("bokeh_theme.yml")
+
+
 def _load_theme():
-    bokeh.io.curdoc().theme = bokeh.themes.Theme(files(__package__).joinpath("bokeh_theme.yml"))
+    bokeh.io.curdoc().theme = bokeh.themes.Theme(theme_path)
 
 
 _load_theme()
@@ -144,7 +148,7 @@ def _format_notes(notes, **kwargs):
     notes_text = (
         '<ul class="footnote">\n'
         + "\n".join(["<li>" + note.format(**kwargs) + "</li>" for note in notes])
-        + "\n<ul>"
+        + "\n</ul>"
     )
     notes = bokeh.models.Div(
         text=notes_text,
@@ -183,7 +187,7 @@ def _add_metatext(
         column_elements.append(notes)
 
     if not do_scale:
-        width = f's{chart_config["size"]["width"]}px'
+        width = f'{chart_config["size"]["width"]}px'
     else:
         width = "98%"
 
@@ -239,7 +243,7 @@ def gdp(
         Tuple[bokeh.layouts.Column, str]: (Column layout of the graph and metadata,
           html rendering of growth table)
     """
-    chart_config = config["Growth in GDP and GDP per Capita"]
+    chart_config = config["Growth in Real GDP and Real GDP per Capita"]
 
     start_year = pd.Period(start_year or chart_config["defaults"]["start_year"])
     end_year = pd.Period(end_year or chart_config["defaults"]["end_year"])
@@ -277,6 +281,7 @@ def gdp(
     chart = bokeh.plotting.figure(
         y_axis_label=f"Index numbers, [{index_year.year} = 1]",
         x_range=(start_year, end_year),
+        y_range=(0, max(indexed_gdp.max(), indexed_gdp_pc.max())),
         x_axis_type="datetime",
         **chart_config["size"],
     )
@@ -344,16 +349,15 @@ def gdp(
         .hide(axis="index")
         .to_html()
     )
-    tbl_html = (
-        tbl_html.replace(
-            "<thead>",
-            "<thead>"
-            + f'<tr><th>&nbsp;</th><th class="text-center" colspan="2">{tbl_title}'
-            + "<!--<br>[Percent]--></th></tr>",
-        )
-        .replace("%", '<span class="percent">%</span>')
-        .replace("<td", "<td" + ' class="text-center"')
-    )
+    tbl_html = tbl_html.replace(
+        "<thead>",
+        "<thead>"
+        + f'<tr><th>&nbsp;</th><th class="text-center" colspan="2">{tbl_title}'
+        + "<!--<br>[Percent]--></th></tr>",
+    ).replace("%", '<span class="percent">%</span>')
+    tbl_html = re.sub(
+        '<td([^>]+)" >', '<td\\1 text-center" >', tbl_html
+    )  # asscumes its <td id="XXX" class="XXX"
 
     return layout, tbl_html
 
@@ -534,7 +538,7 @@ def income_growth_and_distribution(
         Tuple[bokeh.layouts.Column, str]: (Column layout of the graph and metadata, html of table)
     """
     broken = kwargs.get("broken", None)
-    chart_config = config["Income Growth and Distribution"]
+    chart_config = config["Real Income Growth and Distribution"]
     start_year = pd.Period(start_year or chart_config["defaults"]["start_year"])
     end_year = pd.Period(end_year or chart_config["defaults"]["end_year"])
     table_start = pd.Period(table_start or chart_config["defaults"]["table_start"])
@@ -544,7 +548,9 @@ def income_growth_and_distribution(
     gdp_pc = get_data.nipa_series(
         **chart_config["Real GDP per capita"], from_cache=from_cache, save_to_cache=save_to_cache
     )
-    median_income = get_data.excel_series(**chart_config["Real median equivalized personal income"])
+    median_income = get_data.excel_series(
+        **chart_config["Real median equivalized personal income"]
+    ).astype("float")
     if start_year < median_income.index.min():
         raise Exception(f"start_year needs to be at least {median_income.index.min()}")
     if end_year > median_income.index.max():
@@ -560,7 +566,7 @@ def income_growth_and_distribution(
     _write_xlsx_sheet(chart_df, "income_growth_and_distribution")
 
     chart = bokeh.plotting.figure(
-        y_axis_label="Chained (2012) dollars",
+        y_axis_label=chart_config["y_axis_label"],
         x_range=(start_year, end_year),
         x_axis_type="datetime",
         **chart_config["size"],
@@ -575,7 +581,7 @@ def income_growth_and_distribution(
         bokeh.models.Legend(
             items=[
                 ("Real GDP per capita", [gdp_pc_line]),
-                ("Real median unequivalized personal income", [median_income_line]),
+                ("Real median equivalized personal income", [median_income_line]),
                 ("Recessions", [chart.vbar(color=GRAY)]),
             ]
         ),
@@ -590,7 +596,9 @@ def income_growth_and_distribution(
     if broken is None:
         chart.yaxis.formatter = bokeh.models.NumeralTickFormatter(format="0,0")
     else:
-        chart.y_range = bokeh.models.Range1d(min(broken), max(broken))
+        chart.y_range = bokeh.models.Range1d(
+            min(broken), max(float(max(broken)), gdp_pc.max(), median_income.max())
+        )
         chart.yaxis.ticker = broken
         chart.yaxis.major_label_overrides = {broken[0]: "0", broken[1]: "≈"}
 
@@ -641,22 +649,22 @@ def income_growth_and_distribution(
         )
         .set_table_attributes('class="table table-condensed"')
         .relabel_index(
-            ["", "Real GDP<br>per capita", "Real median<br>unequivalized<br>personal income"],
+            ["", "Real GDP<br>per capita", "Real median<br>equivalized<br>personal income"],
             axis=1,
         )
         .hide(axis="index")
         .to_html()
     )
-    tbl_html = (
-        tbl_html.replace(
-            "<thead>",
-            "<thead>"
-            + f'<tr><th>&nbsp;</th><th class="text-center" colspan="2">{tbl_title}</th></tr>',
-        )
-        .replace("%", '<span class="percent">%</span>')
-        .replace("<td id", "<td" + ' class="text-center>"' + " id", 1)
-        .replace("<td id", "<td" + ' class="text-center text-blue>"' + " id", 1)
-        .replace("<td id", "<td" + ' class="text-center text-orange>"' + " id", 1)
+    tbl_html = tbl_html.replace(
+        "<thead>",
+        "<thead>" + f'<tr><th>&nbsp;</th><th class="text-center" colspan="2">{tbl_title}</th></tr>',
+    ).replace("%", '<span class="percent">%</span>')
+    tbl_html = tbl_html = re.sub('<td([^>]+)col0" >', '<td\\1col0 text-center" >', tbl_html)
+    tbl_html = tbl_html = re.sub(
+        '<td([^>]+)col1" >', '<td\\1col1 text-center text-blue" >', tbl_html
+    )
+    tbl_html = tbl_html = re.sub(
+        '<td([^>]+)col2" >', '<td\\1col2 text-center text-orange" >', tbl_html
     )
 
     return layout, tbl_html
@@ -1486,7 +1494,7 @@ def state_income_growth(
     Returns:
         bokeh.layouts.Column: Column layout of the graph and metadata
     """
-    chart_config = config["State Income Growth"]
+    chart_config = config["State Real Income Growth"]
     start_year = pd.Period(start_year or chart_config["defaults"]["start_year"])
     end_year = pd.Period(end_year or chart_config["defaults"]["end_year"])
     if end_year <= start_year:
@@ -1612,7 +1620,7 @@ def state_income(
     _write_xlsx_sheet(state_income, "state_income")
 
     chart = bokeh.plotting.figure(
-        y_axis_label="Chained (2012) dollars",
+        y_axis_label=chart_config["y_axis_label"],
         x_range=state_income["GeoName"].tolist(),
         y_range=y_range,
         **chart_config["size"],
@@ -1701,7 +1709,7 @@ def sustainable_growth(
     _write_xlsx_sheet(chart_df, "sustainable_growth")
 
     chart = bokeh.plotting.figure(
-        y_axis_label="Billions of chained (2012) dollars",
+        y_axis_label=chart_config["y_axis_label"],
         x_range=(start_year, end_year),
         x_axis_type="datetime",
         **chart_config["size"],
@@ -1727,7 +1735,7 @@ def sustainable_growth(
 
     tt = [
         ("Year", "@TimePeriod{%Y}"),
-        ("Value", "@$name{$0,0." + "0" * precision_rules["level_billions"] + "}"),
+        ("Value", "@$name{$0,0." + "0" * precision_rules["levels_billions"] + "}"),
     ]
     tt = _custom_tooltip(tt)
     chart.add_tools(
@@ -1753,9 +1761,9 @@ def sustainable_growth(
 
 
 def economic_growth_tables(
-    start_year: Union[int, str, pd.Period],
-    mid_year: Union[int, str, pd.Period],
-    end_year: Union[int, str, pd.Period],
+    start_year: Union[int, str, pd.Period] = None,
+    mid_year: Union[int, str, pd.Period] = None,
+    end_year: Union[int, str, pd.Period] = None,
     from_cache: bool = False,
     save_to_cache: bool = True,
 ) -> str:
@@ -1776,15 +1784,15 @@ def economic_growth_tables(
     Returns:
         str: HTML representation of Table
     """
-    start_year = pd.Period(start_year)
-    mid_year = pd.Period(mid_year)
-    end_year = pd.Period(end_year)
+    chart_config = config["Real Economic Growth Tables"]
+
+    start_year = pd.Period(start_year or chart_config["defaults"]["start_year"])
+    mid_year = pd.Period(mid_year or chart_config["defaults"]["mid_year"])
+    end_year = pd.Period(end_year or chart_config["defaults"]["end_year"])
     if mid_year <= start_year or end_year <= mid_year:
         raise Exception("Need start_year<mid_year<end_year.")
     if start_year < pd.Period(1987):  # HARDCODE
         raise Exception("Need start_year>=1987.")
-
-    chart_config = config["Economic Growth Tables"]
 
     # Series stored as a dictionary
     series_dict = {
@@ -2644,14 +2652,14 @@ def foreign_subsidiary_employment(
     """U.S. Multinational Companies' Employment in U.S. and Foreign Subsidiaries (table 2)
 
     Creates a table of share of foreign subsidary employment by level of country income.
-    
+
     Notes:
-    Foreign subsidary employment data for some countries is unavailable or has been suppressed, thus data 
-    from these countries are not included in the income-level sums. They are still represented in the yearly 
+    Foreign subsidary employment data for some countries is unavailable or has been suppressed, thus data
+    from these countries are not included in the income-level sums. They are still represented in the yearly
     total as it is reported directly by BEA.
-    
-    For years prior to 1999, the "International" category consists of affiliates that have operations spanning 
-    more than one country and that are engaged in petroleum shipping, other water transportation, or offshore 
+
+    For years prior to 1999, the "International" category consists of affiliates that have operations spanning
+    more than one country and that are engaged in petroleum shipping, other water transportation, or offshore
     oil and gas drilling. These are also not included in the income-level sums, but they are represented
     in the yearly total.
 
@@ -2795,7 +2803,7 @@ def foreign_subsidiary_employment(
     footer = (
         '<tfoot><tr><td colspan="4"><ul>'
         + "\n".join(["<li>" + note + "</li>" for note in chart_config["table"].get("notes")])
-        + "</ul></td></tr></tfoot></table>"
+        + "</ul></td></tr></tfoot>"
     )
     fse_tbl_html = (
         fse_tbl_html.replace("%", '<span class="percent">%</span>')
@@ -3154,7 +3162,7 @@ def saving_investment(
     ):
         chart.add_layout(recession)
 
-    chart.xaxis.ticker = _year_ticks(start_year, end_year, gap=4)
+    chart.xaxis.ticker = _year_ticks(start_year, end_year, gap=10)
 
     tt = [
         ("Year", "@TimePeriod{%Y}"),
@@ -3238,7 +3246,7 @@ def business_cycles(
     _write_xlsx_sheet(chart_df, "business_cycles")
 
     chart = bokeh.plotting.figure(
-        y_axis_label="Billions of chained (2012) dollars",
+        y_axis_label=chart_config["y_axis_label"],
         x_range=(start_quarter, end_quarter),
         x_axis_type="datetime",
         **chart_config["size"],

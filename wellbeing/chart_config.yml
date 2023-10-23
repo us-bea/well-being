@@ -7,21 +7,23 @@ layout config:
     sizing_mode: scale_width
   background_color: white  # Can set to "transparent" or to a specific color instead
 
-narrative date: '2023-05-27' # Roughly 
+narrative date: '2023-10-24'
+narrative description: 'These measures reflect data available at the time of the 2023Q2 "third" GDP release, including initial results of the <a href="https://www.bea.gov/information-updates-national-economic-accounts">2023 Comprehensive Updates</a>, published on September 28, 2023. Select BEA and partner agency information is currently unavailable. This information will be incorporated for the next release of the well-being measures planned for January 2024. For a snapshot of the missing content, see the archived <a href="https://www.bea.gov/well-being/archive/">June 2023 release</a> of this product.'
+cu_disclaimer: 'Select BEA and partner agency information reflecting the <a href="https://www.bea.gov/information-updates-national-economic-accounts">2023 Comprehensive Updates</a> will not be available until December 2023. This information will be incorporated for the next release of the well-being measures planned for January 2024. For a snapshot of the missing content, see the archived <a href="https://www.bea.gov/well-being/archive/">June 2023 release</a> of this product.'
       
-# Chart-specific configs
-# The notes for the State Comparison of Personal Income Growth and Income per Capita are combined. Only the Data one differs, so show as "Data (Personal Income Growth):...", "Data (Income per Capita):...", "Sources: ...", and "Value ..."
+# Chart-specific configs.
+# Note that some of these enclose variable names in brackets and will be filled it based on what is specified through the function calls.
 
-Growth in GDP and GDP per Capita:
-  title: GDP and GDP Per Capita
+Growth in Real GDP and Real GDP per Capita:
+  title: Real GDP and Real GDP Per Capita
   size: *default_size
   notes:
     - 'Data. Real GDP and real GDP per capita, {start_year}–{end_year}'
     - 'Source. BEA <a href="https://apps.bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&nipa_table_list=6&categories=survey" class="figlink">NIPA table 1.1.6</a> and <a href="https://apps.bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&nipa_table_list=264&categories=survey" class="figlink">NIPA table 7.1</a>'
   defaults:
-    start_year: 1953
+    start_year: 1947
     end_year: 2022
-    index_year: 1953
+    index_year: 1947
   real GDP:
     table: T10106
     frequency: A
@@ -35,7 +37,7 @@ Growth in GDP and GDP per Capita:
   narrative: |-
     While the growth and size of GDP are oft-cited measures of the nation’s economic health, they are not measures of economic well-being. A large and growing GDP may simply reflect a large and growing population. GDP per capita standardizes for population and is often used as a proxy for a nation's standard of living.
     
-    Real—inflation-adjusted—GDP per capita has grown more slowly than real GDP, increasing 2.3 percent per year on average between 1953 and 1973, compared with 3.8 percent for real GDP. Over the last two business cycles, between 2007 and 2022, growth slowed with real GDP per capita increasing at 1.0 percent per year and real GDP growing at 1.7  percent per year.
+    Real—inflation-adjusted—GDP per capita has grown more slowly than real GDP, increasing 2.5 percent per year on average between 1947 and 1973, compared with 4.0 percent for real GDP. Over the last two business cycles, between 2007 and 2022, growth slowed with real GDP per capita increasing at 1.1 percent per year and real GDP growing at 1.8 percent per year.
 
 GDP per Capita Country Comparisons:
   title: U.S. GDP Per Capita
@@ -54,13 +56,13 @@ GDP per Capita Country Comparisons:
   IMF Data:
     series: NGDPDPC
   narrative: |-
-    Although growth in U.S. GDP per capita has been slower in recent years than in ealier periods (see "GDP and GDP Per Capita" above), U.S. growth has exceeded growth in G-7 developed economies and is well above the growth in other key nations. As a result, U.S. GDP per capita remains amongst the highest in the world.
+    Although growth in U.S. GDP per capita has been slower in recent years than in ealier periods (see "Real GDP and Real GDP Per Capita" above), U.S. growth has exceeded growth in G-7 developed economies and is well above the growth in other select nations. As a result, U.S. GDP per capita remains amongst the highest in the world.
 
-Income Growth and Distribution:
-  title: Income Growth and Its Distribution
+Real Income Growth and Distribution:
+  title: Real Income Growth and Its Distribution
   size: *default_size
   notes:
-    - 'Data. Real GDP per capita and real median equivalized personal income in 2012 dollars, {start_year}–{end_year}'
+    - 'Data. Real GDP per capita and real median equivalized personal income in 2017 dollars, {start_year}–{end_year}'
     - 'Source. BEA <a href="https://apps.bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&nipa_table_list=264&categories=survey" class="figlink">NIPA Table 7.1</a>, BEA <a href="https://www.bea.gov/data/special-topics/distribution-of-personal-income" class="figlink">Distribution of personal income estimates</a>'
     - >-
       In addition to differences related to the concepts of "median" and
@@ -80,14 +82,15 @@ Income Growth and Distribution:
     full_file: 'Sources/real_median_equivalized_personal_income-2022-12-15.xlsx'
     sheet: Sheet1
     index: A
-    column: B
+    column: C
     first_row: 1
     last_row: 23
     frequency: A
   table:
     title: Average Change
+  y_axis_label: 'Chained (2017) dollars'
   narrative: |-
-    Real GDP per capita and real median personal income provide two different perspectives on the impact of economic growth. 
+    Real GDP per capita and real median personal income provide two different perspectives on economic growth. 
     
     Real GDP per capita spreads total production across the entire population equally.
     
@@ -95,7 +98,7 @@ Income Growth and Distribution:
     
     Real median personal income is a more appropriate gauge of how the U.S. economic pie is distributed because it focuses on how income accrues to households rather than on GDP, which is a measure of production.
     
-    For 2007–2021, real median equivalized personal income grew 1.8 percent per year, higher than the growth of 0.9 percent per year in real GDP per capita.
+    For 2007–2021, real median equivalized personal income grew 1.8 percent per year, higher than the growth of 1.1 percent per year in real GDP per capita. The main driver of the difference in growth between the two measures was personal current transfer receipts, which impact personal income but not GDP. These receipts include benefits from programs like social security, Medicaid, and unemployment insurance.
 
 Income Shares:
   title: Distribution of Income Between Labor and Capital
@@ -110,7 +113,7 @@ Income Shares:
       calclulated as gross domestic income excluding compensation and proprietors' income
       divided by gross domestic income excluding proprietors' income.
   defaults:
-    start_year: 1948
+    start_year: 1947
     end_year: 2022
     callouts: []
   GDI:
@@ -126,10 +129,10 @@ Income Shares:
     frequency: A
     line: 13
   narrative: |-
-    One driver of the changing distribution of income is the movement in the share of labor income relative to capital income. "Capital income" refers to income arising from the use of fixed assets, such as property, plant, and equipment. After reaching 63 percent in 1970, labor's share of income has generally declined, and in 2022 stood at 57.1 percent. Capital's share of income increased from 37 percent in 1970 to 42.9 percent in 2022.
+    One driver of the changing distribution of income is the movement in the share of labor income relative to capital income. "Capital income" refers to income arising from the use of fixed assets, such as property, plant, and equipment. After reaching 63 percent in 1970, labor's share of income has generally declined, and in 2022 stood at 56.1 percent. Capital's share of income increased from 37 percent in 1970 to 43.9 percent in 2022.
 
 Net Worth:
-  title: Americans' Financial Well-being
+  title: Americans' Financial Well-Being
   subtitle: Trends in Household Wealth as Measured by Net Worth
   size: *default_size
   notes:
@@ -180,13 +183,13 @@ Inflation Trends:
   narrative: |-
     Inflation, especially high and variable rates of inflation, can affect economic well-being, including eroding the real income and purchasing power of those on fixed incomes and more generally transferring income from debtors to creditors.
     
-    After a period of deflation during the Great Depression, inflation peaked in the immediate post-WWII era and later in the 1970s and 1980s. Since the mid-1990s, inflation has generally remained in the 2 percent range, low by historical standards; however, inflation was 4.0 percent in 2021 and 6.3 percent in 2022.
+    After a period of deflation during the Great Depression, inflation peaked in the immediate post-WWII era and later in the 1970s and 1980s. Since the mid-1990s, inflation has generally remained in the 2 percent range, low by historical standards; however, inflation was 4.2 percent in 2021 and 6.5 percent in 2022.
 
 Employment:
   title: Employment Trends
   size: *default_size
   notes:
-    - 'Data. Employment and unemployment rates, {start_year}–{end_year}, and FTE employment rate, {start_year}–2021'
+    - 'Data. Employment and unemployment rates, {start_year}–{end_year}, and FTE employment rate, {start_year}–2022'
     - 'Source. BEA <a href="https://apps.bea.gov/iTable/?reqid=19&step=3&isuri=1&nipa_table_list=194&categories=survey" class="figlink">NIPA tables 6.5A</a>, <a href="https://apps.bea.gov/iTable/?reqid=19&step=3&isuri=1&nipa_table_list=195&categories=survey">6.5B</a>, <a href="https://apps.bea.gov/iTable/?reqid=19&step=3&isuri=1&nipa_table_list=196&categories=survey">6.5C</a>, <a href="https://apps.bea.gov/iTable/?reqid=19&step=3&isuri=1&nipa_table_list=197&categories=survey">6.5D</a>; BEA <a href="https://apps.bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&nipa_table_list=264&categories=survey" class="figlink">NIPA table 7.1</a>; <a href="https://www.bls.gov/cps/" class="figlink">Bureau of Labor Statistics (BLS)</a>'
     - >-
       Full-time equivalent employees (FTEs) equals the number of employees on full-time schedules plus the number of employees on part-time schedules converted to a full-time basis. The FTE employment rate is calculated as FTEs divided by population. The prime age employment rate is calculated as the number of employed civilian persons aged 25–54 divided by the population of civilian noninstitutional persons aged 25–54. In concept, the number of persons employed plus the number of persons unemployed plus the number of persons not in the labor force should equal the population.
@@ -227,19 +230,19 @@ Employment:
   narrative: |-
     Employment data are among the economic indicators most closely watched by households.
     
-    After falling steadily to 3.7 percent during the last expansion, unemployment—perhaps the best-known employment indicator—rose rapidly to over 8 percent in 2020 before falling to 5.4 percent in 2021 and 3.6 percent in 2022, reflecting the impact of the coronavirus pandemic.
+    After falling steadily to 3.7 percent during the last expansion, unemployment—perhaps the best-known employment indicator—rose rapidly to over 8 percent in 2020 before falling to 5.4 percent in 2021 and 3.6 percent in 2022.
     
     In addition, two of the broader-based employment indicators, which are not affected by changes in labor force participation rates, also rose throughout the previous recovery. The overall (FTE) employment rate increased to 42.3 percent in 2019 before falling slightly to 39.9 percent in 2020 and rising to 41.0 percent in 2021. The prime age workers' employment rate peaked at 80 percent in 2019, before falling to 75.6 percent in 2020 and rising in 2021 and 2022, reaching 79.9 percent in the latest year.
 
 Industry Comparisons:
-  title: Industry Comparison of Economic Growth
+  title: Industry Comparison of Real Economic Growth
   size: *default_size
   notes:
     - 'Data. Average annual changes in real value added by industry, {start_quarter}–{end_quarter}'
     - 'Source. BEA GDP by Industry table "<a href="https://apps.bea.gov/iTable/iTable.cfm?reqid=150&step=3&isuri=1&table_list=8&categories=gdpxind" class="figlink">Chain-Type Quantity Indexes for Value Added by Industry</a>"'
   defaults:
     start_quarter: '2020Q2'
-    end_quarter: '2022Q4'
+    end_quarter: '2023Q2'
   industries: ['72', '56', '11', '71', '23', '33DG', '61', '52', 'GDP', 'G', '62', '51', '55', '21', '31ND', '81', '54', '53', '44RT', '48TW', '22', '42']
   Industry Data:
     table: 8
@@ -247,23 +250,17 @@ Industry Comparisons:
   narrative: |-
     The economic experience across industries varies significantly. Since the latest trough in the business cycle in 2020Q2, real GDP increased at a 6.2 percent annual rate. Changes by industry ranged from a 6.3 percent decline in mining to a 47.6 percent increase in arts, entertainment, and recreation.
 
-State Income:
-  notes:
-    - 'Data (Personal Income Growth). Average annual changes in real per capita personal income by state, {start_year}–{end_year}'
-    - 'Data (Income per Capita). Real per capita personal income by state, {year}'
-    - 'Source. BEA Real Personal Income by State table "<a href="https://apps.bea.gov/iTable/iTable.cfm?reqid=70&step=30&isuri=1&major_area=0&area=xx&year=-1&tableid=100&category=8100&area_type=0&year_end=-1&classification=non-industry&state=0&statistic=2&yearbegin=-1&unit_of_measure=levels" class="figlink">Real Per Capita Personal Income By State (constant 2012 dollars)</a>"'
-    - 'Value for the United States includes the 50 states and the District of Columbia.'
 
-State Income Growth:
-  title: State Comparison of Personal Income Growth
+State Real Income Growth:
+  title: State Comparison of Real Personal Income Growth and Real Personal Income Per Capita
   size: *default_size
   notes:
-    - 'Data. Average annual changes in real per capita personal income by state, {start_year}–{end_year}'
+    - 'Data. Average annual changes in real personal income per capita by state, {start_year}–{end_year}'
     - 'Source. BEA Real Personal Income by State table "<a href="https://apps.bea.gov/iTable/iTable.cfm?reqid=70&step=30&isuri=1&major_area=0&area=xx&year=-1&tableid=100&category=8100&area_type=0&year_end=-1&classification=non-industry&state=0&statistic=2&yearbegin=-1&unit_of_measure=levels" class="figlink">Real Per Capita Personal Income By State (constant 2012 dollars)</a>"'
     - 'Value for the United States includes the 50 states and the District of Columbia.'
   defaults:
     start_year: 2008
-    end_year: 2021
+    end_year: 2022
   State Income:
     table: SARPI
     frequency: A
@@ -273,19 +270,20 @@ State Income Growth:
     While figures on GDP, employment, and inflation for the nation dominate news coverage, the economic experience across the country varies considerably. Since the start of the Great Recession (calculated with annual data available from 2008 through 2021), real personal income per capita grew at an average annual rate of 1.9 percent, with California growing by 2.7 percent and Oklahoma growing by 0.9 percent. Similarly, in 2021, real personal income per capita for the nation ranged from $45,960 in Mississippi to $70,424 in Connecticut.
 
 State Income Levels:
-  title: State Comparison of Income Per Capita
+  title: State Comparison of Real Income Per Capita
   size: *default_size
   notes:
-    - 'Data. Real per capita personal income by state, {year}'
+    - 'Data. Real personal income per capita by state, {year}'
     - 'Source. BEA Real Personal Income by State table "<a href="https://apps.bea.gov/iTable/iTable.cfm?reqid=70&step=30&isuri=1&major_area=0&area=xx&year=-1&tableid=100&category=8100&area_type=0&year_end=-1&classification=non-industry&state=0&statistic=2&yearbegin=-1&unit_of_measure=levels" class="figlink">Real Per Capita Personal Income By State (constant 2012 dollars)</a>"'
     - 'Value for the United States includes the 50 states and the District of Columbia.'
   defaults:
-    year: 2021
+    year: 2022
   State Income:
     table: SARPI
     frequency: A
     geo: STATE
     line: 2
+  y_axis_label: 'Chained (2017) dollars'
 
 GDP vs NDP:
   title: Sustainable Economic Growth
@@ -305,17 +303,22 @@ GDP vs NDP:
     table: T10706
     frequency: A
     line: 14
+  y_axis_label: 'Billions of chained (2017) dollars'
   narrative: |-
     Economists since Adam Smith have been concerned with sustaining a level of economic growth that would provide for a rising standard of living for a growing population. In the national accounts, sustainable growth is measured by net domestic product (NDP), which is equal to GDP less depreciation, that is, what is left over for consumption after deducting the amount necessary to replace the capital used up in that production.
     
-    Over the last few decades, NDP has grown more slowly than GDP. This is the result of gross investment spending (a component of GDP) growing more slowly than depreciation. This slowing of investment spending has reduced the net investment available for activities that produce economic growth and that lead to a rise in productivity and standards of living.
+    Over the last few decades, NDP has grown more slowly than GDP. From 1973 to 2022, real NDP grew at 2.4 percent per year on average, compared with 2.6 percent for real GDP. This is the result of gross investment spending (a component of GDP) growing more slowly than depreciation. This slowing of investment spending has reduced the net investment available for activities that produce economic growth and that lead to a rise in productivity and standards of living.
 
-Economic Growth Tables:
-  title: Average Annual Growth
+Real Economic Growth Tables:
+  title: Average Annual Real Growth
   notes:
     - 'Source. BEA <a href="https://apps.bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&nipa_table_list=3&categories=survey" target="_blank">NIPA table 1.1.3</a>, <a href="https://www.bls.gov/mfp/special_requests/mfptablehis.xlsx" target="_blank">Integrated BEA GDP-BLS productivity accounts</a>'
     - '<sup>1</sup> For real GDP, estimates under the contributions columns are also percent changes.'
     - "Contributions to real GDP for labor input and capital services are calculated by multiplying labor's and capital's average shares in cost by their average annual growth rates; contributions to real GDP for multifactor productivity is the residual."
+  defaults:
+    start_year: 1987
+    mid_year: 2007
+    end_year: 2022
   narrative: |-
     Growth in GDP is essential to economic well-being.
     
@@ -368,7 +371,7 @@ Trade Balance:
   narrative: |-
     International trade is an important factor in economic growth. By allowing for specialization across nations and raising productivity, trade yields higher growth and standards of living.
     
-    Between 1948 and 2022, overall U.S. trade (exports plus imports) as a percentage of GDP grew from about 9 percent to about 27 percent. The increased international trade—along with higher quality economic data and better-informed policies and institutions—contributed to an unprecedented period of growth in standards of living in the United States and other developed economies. Since 1948, real GDP per capita quadrupled in the United States.
+    Between 1947 and 2022, overall U.S. trade (exports plus imports) as a percentage of GDP grew from about 10.5 percent to about 27 percent. The increased international trade—along with higher quality economic data and better-informed policies and institutions—contributed to an unprecedented period of growth in standards of living in the United States and other developed economies. Since 1947, real GDP per capita more than quadrupled in the United States.
     
     Until the mid-1970s, the United States had an international trade balance that was usually in surplus. Over time, the U.S. trade balance moved to persistent trade deficits (with deficits on goods more than offsetting surpluses in services). These trade deficits were the result of domestic spending that exceeded domestic production, or its mirror image, low national saving that reflects the higher domestic spending. The lower investment that often accompanies lower saving may slow growth in productivity, the economy, and standards of living, thereby offsetting some of the positive contributions of international trade to economic growth.
 
@@ -419,14 +422,6 @@ Financing Trade:
     
     Because the U.S. dollar is an international currency, the United States' ability to service foreign debt is not constrained by the supply of currency earned through exports but by its income. Comparing net investment income payments to gross domestic income, shows that the "debt service to income ratio" has remained relatively stable over time.
     
-    Another key measure is the ratio of U.S. net liabilities to the rest of the world compared with U.S. household assets. The "international debt to asset ratio" has grown since the 1980s, with international debt equal to around 9.5 percent of U.S. assets in 2022.
-    
-    Currently, U.S. receipts from overseas investments exceed payments for foreign investments in the United States, resulting in a surplus on international investment income even though the United States has outstanding net liabilities to the rest of the world. The rates of return earned by U.S. residents on assets abroad exceed the rates of return on foreign-held assets in the United States by a large enough amount to offset U.S. debt payments to the rest of the world.
-  narrative1: |-
-    One indicator of the long-term impact of U.S. trade deficits is the net amount the nation pays in external debt service, dividends, reinvested earnings, and other investment income to foreign investors relative to its exports. While the "debt service to exports ratio" generally increased from the mid-1970s through the late-1990s and trended downward thereafter, it has been consistently negative, meaning that the United States receives more in foreign investment income than it pays to foreign residents.
-    
-    Because the U.S. dollar is an international currency, the United States' ability to service foreign debt is not constrained by the supply of currency earned through exports but by its income. Comparing net investment income payments to gross domestic income, shows that the "debt service to income ratio" has remained relatively stable over time.
-  narrative2: |-
     Another key measure is the ratio of U.S. net liabilities to the rest of the world compared with U.S. household assets. The "international debt to asset ratio" has grown since the 1980s, with international debt equal to around 9.5 percent of U.S. assets in 2022.
     
     Currently, U.S. receipts from overseas investments exceed payments for foreign investments in the United States, resulting in a surplus on international investment income even though the United States has outstanding net liabilities to the rest of the world. The rates of return earned by U.S. residents on assets abroad exceed the rates of return on foreign-held assets in the United States by a large enough amount to offset U.S. debt payments to the rest of the world.
@@ -592,7 +587,7 @@ Budget Deficit:
     
     For the federal government, the ability to service debt is measured by the "federal debt service ratio," calculated as federal interest payments divided by gross national income (GNI). Borrowing compared with income is measured using the "federal net borrowing to income ratio," calculated as federal total expenditures less federal total receipts divided by national income.
     
-    The federal debt service ratio has remained relatively flat over the last few decades. In addition, while the federal net borrowing to income ratio has been much more volatile, except at its peak in 2020 during the coronavirus pandemic, it was not much higher than such debt ratios in the past 50 years and remained significantly below the debt ratios created by the large deficits recorded during WWII and the Great Depression (see "U.S. Budget and the Economy Over Time" above).
+    The federal debt service ratio has remained relatively flat over the last few decades. The federal net borrowing to income ratio has been much more volatile, peaking in 2020 during the coronavirus pandemic.
 
 Saving and Investment:
   title: Saving and Investment for the Future
@@ -616,25 +611,15 @@ Saving and Investment:
     table: T10105
     frequency: A
     line: 1
-  # Keep these in sync
   narrative: |-
     Net investment—gross investment less depreciation—is often called sustainable investment. A significant share of gross investment in plant, equipment, and IT goes toward replacing capital that wears out (that is, depreciation). Net investment increases the nation's production capabilities.
     
     Net saving represents the amount of net income that is available to finance net investment; however, net investment can also be financed by borrowing from the rest of the world.
     
-    During the post-WWII era, net investment and net saving have been trending down (with the related drags on productivity, growth, and standards of living). The downward trend in net investment has slowed growth in U.S. capital stock and capital services, accounting for a large share of the decline in trend GDP growth (see "Trends in Economic Growth" above).
+    During the post-WWII era, net investment and net saving have been trending down (with the related drags on productivity, growth, and standards of living). The downward trend in net investment has slowed growth in U.S. capital stock and capital services, accounting for a large share of the decline in trend GDP growth (see "Trends in Real Economic Growth" above).
     
     The gap between the net investment rate and the net saving rate has widened over the last 35 years, with the net saving rate turning negative in 2008 during the Great Recession for the first time since the Great Depression.
-  narrative1: |-
-    Net investment—gross investment less depreciation—is often called sustainable investment. A significant share of gross investment in plant, equipment, and IT goes toward replacing capital that wears out (that is, depreciation). Net investment increases the nation's production capabilities.
-    
-    Net saving represents the amount of net income that is available to finance net investment; however, net investment can also be financed by borrowing from the rest of the world.
-    
-    During the post-WWII era, net investment and net saving have been trending down (with the related drags on productivity, growth, and standards of living).
-  narrative2: |-
-    The downward trend in net investment has slowed growth in U.S. capital stock and capital services, accounting for a large share of the decline in trend GDP growth (see "Trends in Economic Growth" above).
-    
-    The gap between the net investment rate and the net saving rate has widened over the last 35 years, with the net saving rate turning negative in 2008 during the Great Recession for the first time since the Great Depression.
+
 
 Business Cycles:
   title: Trends in U.S. Business Cycles
@@ -648,7 +633,7 @@ Business Cycles:
       turning points identified by the National Bureau of Economic Research.
   defaults:
     start_quarter: 1947Q1
-    end_quarter: 2022Q1
+    end_quarter: 2023Q2
   GDP Quantity Index:
     table: T10103
     frequency: Q
@@ -657,8 +642,9 @@ Business Cycles:
     table: T10106
     frequency: Q
     line: 1
+  y_axis_label: 'Billions of chained (2017) dollars'
   narrative: |-
-    The current expansion began in April 2020. Since the trough in 2020Q2, the economy has increased 5.7 percent on average. Since 1947, the average expansion has lasted 21 quarters, with an average increase of 4.5 percent.
+    The current expansion began in April 2020. Since the trough in 2020Q2, the economy has increased 5.3 percent on average. Since 1947, the average expansion has lasted 21 quarters, with an average increase of 4.5 percent.
 
 
 Business Cycle Table:
@@ -675,7 +661,7 @@ Business Cycle Table:
       turning points identified by the National Bureau of Economic Research.
   defaults:
     start_quarter: 1947Q1
-    end_quarter: 2022Q1
+    end_quarter: 2023Q2
   GDP Quantity Index:
     table: T10103
     frequency: Q
@@ -684,5 +670,4 @@ Business Cycle Table:
     table: T10106
     frequency: Q
     line: 1
-
 

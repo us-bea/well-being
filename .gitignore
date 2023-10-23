@@ -2,8 +2,9 @@
 ./*.html
 .ipynb_checkpoints/
 __pycache__
-output.xlsx
+output*.xlsx
 .mypy_cache/
 .vscode/
-index.Template_final*.htm
+index.Template*_Final*.htm
 docsrc/_build/
+# cache*/
