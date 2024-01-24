@@ -2647,7 +2647,7 @@ def foreign_subsidiary_sales_table(
 
 
 def foreign_subsidiary_employment(
-    years=[1997, 2000, 2007, 2019, 2020], from_cache: bool = False, save_to_cache: bool = True
+    years=None, from_cache: bool = False, save_to_cache: bool = True
 ) -> str:
     """U.S. Multinational Companies' Employment in U.S. and Foreign Subsidiaries (table 2)
 
@@ -2675,10 +2675,12 @@ def foreign_subsidiary_employment(
     Returns:
         str: HTML table
     """
+    chart_config = config["Foreign Employment"]
+
+    if years is None:
+        years = [int(year_str.strip()) for year_str in chart_config["defaults"]["years"].split(",")]
     if min(years) < 1997:  # HARDCODE
         raise Exception("Minimum year is 1997")
-
-    chart_config = config["Foreign Employment"]
 
     full_file = get_data.cache_excel_file(
         "https://datacatalogfiles.worldbank.org/ddh-published/0037712/DR0090754/OGHIST.xlsx",
